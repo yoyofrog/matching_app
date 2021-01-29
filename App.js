@@ -8,12 +8,21 @@
 import React, {Component} from "react";
 import {View } from 'react-native'
 import Nav from './src/nav'
+import Geo from './src/utils/geo'
 
 class App extends Component{
-  render () {
+    state={
+        isGeoInit:false,
+    }
+    async componentDidMount() {
+        const result = await Geo.initGeo()
+        this.setState({isGeoInit: true})
+    }
+
+    render () {
       return (
           <View style={{flex:1}}>
-              <Nav></Nav>
+              { this.state.isGeoInit? <Nav></Nav>: null}
           </View>
       )
   }

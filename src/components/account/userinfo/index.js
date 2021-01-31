@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
-import {View, Text, TouchableOpacity} from 'react-native'
+import {View, Text, TouchableOpacity, Image} from 'react-native'
 import {Input} from "react-native-elements";
 import DatePicker from 'react-native-datepicker';
 import Picker from 'react-native-picker'
+import ImageCropPicker from 'react-native-image-crop-picker'
+import {Overlay} from "teaset";
+import {inject, observer} from "mobx-react";
 
 import SvgUri from "react-native-svg-uri";
 import {pxToDp} from "../../../utils/stylesKits";
@@ -10,9 +13,14 @@ import {male, female} from "../../../res/font/iconSvg";
 import Geo from "../../../utils/geo"
 import THButton from '../../../subComponents/THButton'
 import Toast from "../../../utils/Toast";
+import request from "../../../utils/request";
+import {  ACCOUNT_CHECKHEADIMAGE, ACCOUNT_REGINFO} from "../../../utils/pathMap"
 //城市选择数据
 import cityJson from "../../../res/citys.json"
+import JMessage from "../../../utils/JMessage";
 
+@inject("rootStore")
+@observer
 export default class UserInfo extends Component{
     constructor() {
         super();
@@ -20,11 +28,11 @@ export default class UserInfo extends Component{
             nickname:'',
             gender:'male',
             birthday:'',
-            city:'66',
+            city:'广州',
             header:'',
-            lng:'',
-            lat:'',
-            address:''
+            lng:'113.42264',
+            lat:'23.12211',
+            address:'广东省江门市新会区'
         }
     }
     chooseGender=(gender)=>{
@@ -33,11 +41,12 @@ export default class UserInfo extends Component{
 
     }
     async componentDidMount() {
-        await Geo.getCityByLocation()
-        console.log(result)
-        const address = res.regeocode.formatted_address
-        const city = res.regeocode.addressComponent.city
-        this.setState({address})
+        // const res = await Geo.getCityByLocation()
+        // console.log(res)
+        // // const address = res.regeocode.formatted_address
+        // const city = res.regeocode.addressComponent.city
+        // this.setState({address})
+
     }
     showCity=()=>{
         Picker.init({
@@ -60,11 +69,77 @@ export default class UserInfo extends Component{
         });
         Picker.show();
     }
-    chooseHead=()=>{
+    chooseHead=async ()=>{
         const {nickname, birthday, city} = this.state
         if (!nickname|!birthday|!city) {
             return Toast.message(`请输入有效信息${nickname+birthday+ city}`,2000,"center")
         }
+        const image = await ImageCropPicker.openPicker({
+          width: 300,
+          height: 400,
+          cropping: true
+        })
+        let overlayViewRef = null
+        let overlayView = (
+          <Overlay.View
+            style={{flex:1, backgroundColor:"#000"}}
+            modal={true}
+            overlayOpacity={0}
+            ref={v => overlayViewRef = v}
+            >
+            <View style={{
+                position: "relative",
+                marginTop:pxToDp(30),
+                alignSelf: "center",
+                justifyContent:"center",
+                width:pxToDp(334),
+                height:pxToDp(334),
+                alignItems:"center" }}>
+                <Image style={{position: "absolute",width:"100%", height:"100%", zIndex:100}} source={require('../../../res/scan.gif')}></Image>
+                <Image source={{uri:image.path}} style={{width:"60%", height: "60%"}}></Image>
+            </View>
+          </Overlay.View>
+        );
+        Overlay.show(overlayView)
+        const result = await this.uploadHeadImg(image)
+        if (result.code !== "10000") {
+            return
+        }
+        const params = this.state
+        params.header = result.headImgPath
+        const result1 = await request.privatePost(ACCOUNT_REGINFO, params)
+        console.log(result1)
+        if (result1.code !== "10000") {
+            return
+        }
+        //注册极光
+        const result2 = await this.jgRegister(this.props.rootStore.userId,this.props.rootStore.mobile)
+        //关闭校验图片
+        overlayViewRef.close()
+        Toast.smile('恭喜注册成功', 3000)
+        setTimeout(()=> {
+            alert('跳转页码')
+        },3000)
+
+    }
+
+    uploadHeadImg = async(image) => {
+        const formData = new FormData()
+        formData.append("headPhoto", {
+            uri: image.path,
+            type: image.mime,
+            name: image.path.split("/").pop()
+        })
+        return request.privatePost(ACCOUNT_CHECKHEADIMAGE, formData, {
+            headers:{
+                "Content-Type": "multipart/form-data",
+            }
+        })
+
+    }
+    //执行极光注册
+    jgRegister = (username, password)=>{
+        return JMessage.register(username, password)
     }
     render() {
         const {gender,nickname, birthday,address, city} = this.state
@@ -132,7 +207,7 @@ export default class UserInfo extends Component{
                     <TouchableOpacity onPress={this.showCity}>
                         <Input
                             inputStyle={{fontSize:pxToDp(16), fontWeight: "bold", color:"#afafaf"}}
-                            value={"当前定位"}
+                            value={`当前定位${this.state.address}`}
                             disabled={true}
                         />
                     </TouchableOpacity>

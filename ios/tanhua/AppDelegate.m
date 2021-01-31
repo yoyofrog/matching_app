@@ -3,6 +3,8 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+//添加极光
+#import <RCTJMessageModule.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -12,6 +14,25 @@
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
 
+//添加极光
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+   [JMessage setupJMessage:launchOptions
+                    appKey:appKey
+                   channel:@""
+          apsForProduction:isProduction
+                  category:nil
+            messageRoaming:true];
+
+   [JMessage addDelegate:self withConversation:nil];
+}
+
+//JMessage 离线消息监听
+- (void)onSyncOfflineMessageConversation:(JMSGConversation *)conversation
+                         offlineMessages:(NSArray JMSG_GENERIC ( __kindof JMSGMessage *) *)offlineMessages {
+  [RCTJMessageEventQueue sharedInstance].offlineConversation = conversation;
+  [RCTJMessageEventQueue sharedInstance].offlineMsgArray = offlineMessages;
+}
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
   SKDescriptorMapper *layoutDescriptorMapper = [[SKDescriptorMapper alloc] initWithDefaults];

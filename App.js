@@ -7,8 +7,12 @@
  */
 import React, {Component} from "react";
 import {View } from 'react-native'
+import { Provider} from "mobx-react";
+
 import Nav from './src/nav'
 import Geo from './src/utils/geo'
+import rootStore from './src/mobx/index'
+import JMessage from "./src/utils/JMessage";
 
 class App extends Component{
     state={
@@ -17,13 +21,16 @@ class App extends Component{
     async componentDidMount() {
         const result = await Geo.initGeo()
         this.setState({isGeoInit: true})
+        JMessage.init()
     }
 
     render () {
       return (
-          <View style={{flex:1}}>
-              { this.state.isGeoInit? <Nav></Nav>: null}
-          </View>
+          <Provider rootStore={rootStore}>
+              <View style={{flex:1}}>
+                  { this.state.isGeoInit? <Nav></Nav>: null}
+              </View>
+          </Provider>
       )
   }
 }

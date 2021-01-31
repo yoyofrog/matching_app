@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {BASE_URI} from "./pathMap";
 import Toast from '../utils/Toast'
+import rootStore from '../mobx'
 const instance = axios.create({
     baseURL: BASE_URI
 })
@@ -18,5 +19,18 @@ instance.interceptors.response.use(function (response) {
 
 export default {
     get: instance.get,
-    post: instance.post
+    post: instance.post,
+    //post 自动带上token
+    privatePost:(url,data={},options={})=>{
+        const token = rootStore.token;
+        const headers = options.headers||{}
+        return instance.post(url, data, {
+            ...options,
+            headers:{
+                //主要Bearer后面有个空格
+                 "Authorization": `Bearer ${token}`,
+                ...headers
+            }
+        })
+}
 }

@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {  CodeField,  Cursor} from 'react-native-confirmation-code-field';
 
-
 import validator from "../../../utils/validator";
 import {pxToDp} from "../../../utils/stylesKits";
 import request from '../../../utils/request'
@@ -13,7 +12,11 @@ import {ACCOUNT_LOGIN, ACCOUNT_VALIDATEVCODE} from "../../../utils/pathMap";
 import Toast from '../../../utils/Toast'
 
 import THButton from '../../../subComponents/THButton'
+import {inject, observer} from "mobx-react";
 
+
+@inject("rootStore")
+@observer
 export default class Login extends Component {
     state = {
         phoneNumber:'13616520261',
@@ -79,9 +82,11 @@ export default class Login extends Component {
             phone: phoneNumber,
             vcode: vCodeTxt
         })
+        console.log(result)
         if (result.code != '10000') {
             return
         }
+        this.props.rootStore.setUserInfo(phoneNumber, result.data.token, result.data.id)
         if (result.data.isNew) {
             // 新用户
             this.props.navigation.navigate('UserInfo')

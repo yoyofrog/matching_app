@@ -1,8 +1,8 @@
-import { observable, action,makeAutoObservable } from "mobx";
+import { observable, action,makeObservable } from "mobx";
 
 class RootStore {
     constructor() {
-        makeAutoObservable(this)
+        makeObservable(this)
     }
   // observable 表示数据可监控 表示是全局数据
     @observable

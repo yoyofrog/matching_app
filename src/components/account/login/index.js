@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {View, Text, Image, StatusBar, StyleSheet} from 'react-native'
+import {View, Text, Image, StatusBar, StyleSheet, AsyncStorage} from 'react-native'
 import {Input, Button} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {SafeAreaProvider} from "react-native-safe-area-context";
-import {  CodeField,  Cursor} from 'react-native-confirmation-code-field';
+import {CodeField, Cursor} from 'react-native-confirmation-code-field';
 
 import validator from "../../../utils/validator";
 import {pxToDp} from "../../../utils/stylesKits";
@@ -19,22 +19,24 @@ import {inject, observer} from "mobx-react";
 @observer
 export default class Login extends Component {
     state = {
-        phoneNumber:'13616520261',
+        phoneNumber: '13616520261',
         phoneValid: true,
         isLoading: true,
         showLogin: true,
-        vCodeTxt:'',
-        timeCount:'',
+        vCodeTxt: '',
+        timeCount: '',
         isCountDown: false
     }
+
     constructor() {
         super();
     }
-    phoneNumberChange=(number)=> {
 
-        this.setState({phoneNumber:number})
+    phoneNumberChange = (number) => {
+
+        this.setState({phoneNumber: number})
     }
-     phoneNumberSubmit = async ()=>{
+    phoneNumberSubmit = async () => {
         const {phoneNumber} = this.state
         const phoneValid = validator.validatePhone(phoneNumber)
         if (!phoneValid) {
@@ -42,23 +44,23 @@ export default class Login extends Component {
             return
         }
         const result = await request.post(ACCOUNT_LOGIN, {phone: this.state.phoneNumber})
-        if(result.code = '10000') {
+        if (result.code = '10000') {
             this.setState({showLogin: false})
             this.countDown()
         }
 
     }
-    vCodeChange=(vCodeTxt)=> {
+    vCodeChange = (vCodeTxt) => {
         this.setState({vCodeTxt})
     }
-    countDown=()=>{
+    countDown = () => {
         if (this.state.isCountDown) {
             return
         }
         this.setState({isCountDown: true})
-        let seconds= 5
+        let seconds = 5
         this.setState({timeCount: `重新获取${seconds}s`})
-        let timeCount = setInterval(()=>{
+        let timeCount = setInterval(() => {
             seconds--
             this.setState({timeCount: `重新获取${seconds}s`})
             if (seconds === 0) {
@@ -69,12 +71,12 @@ export default class Login extends Component {
         }, 2000)
 
     }
-    repGetVcode=()=>{
+    repGetVcode = () => {
         this.countDown()
     }
-    submitVcode= async ()=>{
-        const { vCodeTxt, phoneNumber} = this.state
-        if (vCodeTxt.length !=6 ) {
+    submitVcode = async () => {
+        const {vCodeTxt, phoneNumber} = this.state
+        if (vCodeTxt.length != 6) {
             Toast.message('请输入有效验证码', 2000, 'center')
             return
         }
@@ -82,103 +84,118 @@ export default class Login extends Component {
             phone: phoneNumber,
             vcode: vCodeTxt
         })
-        console.log(result)
         if (result.code != '10000') {
             return
         }
         this.props.rootStore.setUserInfo(phoneNumber, result.data.token, result.data.id)
+        await AsyncStorage.setItem('userInfo', JSON.stringify({
+            mobile: phoneNumber,
+            token: result.data.token,
+            userId: result.data.id
+        }))
         if (result.data.isNew) {
             // 新用户
             this.props.navigation.navigate('UserInfo')
         } else {
-            // 老用户
+            this.props.navigation.navigate('TabBar')
         }
     }
 
 
     render() {
-        const {phoneNumber, phoneValid, showLogin, timeCount, isCountDown } = this.state
+        const {phoneNumber, phoneValid, showLogin, timeCount, isCountDown} = this.state
         let Vcode =
             <View>
-                <View><Text style={{ marginTop:pxToDp(10), fontSize: pxToDp(20), color: '#888', fontWeight:'bold'}}>输入6位验证码</Text></View>
-                <View><Text style={{marginTop:pxToDp(10), color:'#888'}}>已发到：{phoneNumber}</Text></View>
+                <View><Text style={{
+                    marginTop: pxToDp(10),
+                    fontSize: pxToDp(20),
+                    color: '#888',
+                    fontWeight: 'bold'
+                }}>输入6位验证码</Text></View>
+                <View><Text style={{marginTop: pxToDp(10), color: '#888'}}>已发到：{phoneNumber}</Text></View>
                 <View>
                     <CodeField
-                 value={this.state.vCodeTxt}
-                 onChangeText={this.vCodeChange}
-                 onSubmitEditing={this.submitVcode}
-                 cellCount={6}
-                 rootStyle={styles.codeFieldRoot}
-                 keyboardType="number-pad"
-                 renderCell={({index, symbol, isFocused}) => (
-                     <Text
-                         key={index}
-                         style={[styles.cell, isFocused && styles.focusCell]}
-                         >
-                         {symbol || (isFocused ? <Cursor /> : null)}
-                     </Text>
-                 )}
-             />
+                        value={this.state.vCodeTxt}
+                        onChangeText={this.vCodeChange}
+                        onSubmitEditing={this.submitVcode}
+                        cellCount={6}
+                        rootStyle={styles.codeFieldRoot}
+                        keyboardType="number-pad"
+                        renderCell={({index, symbol, isFocused}) => (
+                            <Text
+                                key={index}
+                                style={[styles.cell, isFocused && styles.focusCell]}
+                            >
+                                {symbol || (isFocused ? <Cursor/> : null)}
+                            </Text>
+                        )}
+                    />
                 </View>
-                <View style={{width: "75%", height: pxToDp(40), alignSelf:"center"}}>
-                    <THButton disable={isCountDown} onPress={this.repGetVcode} style={{marginTop:pxToDp(20), borderRadius: pxToDp(20), overflow: 'hidden'}}>{timeCount}</THButton>
+                <View style={{width: "75%", height: pxToDp(40), alignSelf: "center"}}>
+                    <THButton disable={isCountDown} onPress={this.repGetVcode} style={{
+                        marginTop: pxToDp(20),
+                        borderRadius: pxToDp(20),
+                        overflow: 'hidden'
+                    }}>{timeCount}</THButton>
                 </View>
             </View>
 
         let Login =
-            <View >
-                <View >
-                    <Text style={{ fontSize: pxToDp(18), color:"#888"}}>手机号登录注册</Text>
+            <View>
+                <View>
+                    <Text style={{fontSize: pxToDp(18), color: "#888"}}>手机号登录注册</Text>
                 </View>
-                <View >
+                <View>
                     <Input
                         placeholder='请输入手机号码'
                         maxLength={11}
                         keyboardType="phone-pad"
                         value={phoneNumber}
                         onChangeText={this.phoneNumberChange}
-                        errorMessage= {phoneValid? '':'手机号码格式不正确'}
+                        errorMessage={phoneValid ? '' : '手机号码格式不正确'}
                         onSubmitEditing={this.phoneNumberSubmit}
-                        leftIcon={{ type: 'font-awesome', name: 'phone', size:pxToDp(20) }}/>
+                        leftIcon={{type: 'font-awesome', name: 'phone', size: pxToDp(20)}}/>
 
                 </View>
-                <View style={{width: "75%", height: pxToDp(40), alignSelf:"center"}}>
-                    <THButton style={{borderRadius: pxToDp(20), overflow: 'hidden'}} onPress={this.phoneNumberSubmit}>获取验证码</THButton>
+                <View style={{width: "75%", height: pxToDp(40), alignSelf: "center"}}>
+                    <THButton style={{borderRadius: pxToDp(20), overflow: 'hidden'}}
+                              onPress={this.phoneNumberSubmit}>获取验证码</THButton>
                 </View>
 
             </View>
         return (
             <SafeAreaProvider>
-            <View>
-                <StatusBar backgroundColor="transparent" translucent={true}></StatusBar>
-                <Image style={{width: "100%", height: pxToDp(200)}}     source={require('../../../res/profileBackground.jpg')}></Image>
+                <View>
+                    <StatusBar backgroundColor="transparent" translucent={true}></StatusBar>
+                    <Image style={{width: "100%", height: pxToDp(200)}}
+                           source={require('../../../res/profileBackground.jpg')}></Image>
 
-                <View style={{padding: pxToDp(20)}}>
-                  { showLogin? Login:Vcode}
+                    <View style={{padding: pxToDp(20)}}>
+                        {showLogin ? Login : Vcode}
+                    </View>
+
+
                 </View>
-
-
-            </View>
             </SafeAreaProvider>
         );
     }
 }
 
 const styles = StyleSheet.create({
-  root: {flex: 1, padding: 20},
-  title: {textAlign: 'center', fontSize: 30},
-  codeFieldRoot: {marginTop: 20},
-  cell: {
-    width: 40,
-    height: 40,
-    lineHeight: 38,
-    fontSize: 24,
-    borderBottomWidth: 2,
-    borderColor: '#7d53ea',
-    textAlign: 'center',
-      color:'#7d53ea'
-  },
-  focusCell: {
-    borderColor: '#7d53ea',
-  },
+    root: {flex: 1, padding: 20},
+    title: {textAlign: 'center', fontSize: 30},
+    codeFieldRoot: {marginTop: 20},
+    cell: {
+        width: 40,
+        height: 40,
+        lineHeight: 38,
+        fontSize: 24,
+        borderBottomWidth: 2,
+        borderColor: '#7d53ea',
+        textAlign: 'center',
+        color: '#7d53ea'
+    },
+    focusCell: {
+        borderColor: '#7d53ea',
+    },
 });

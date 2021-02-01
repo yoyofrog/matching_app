@@ -118,7 +118,7 @@ export default class UserInfo extends Component{
         overlayViewRef.close()
         Toast.smile('恭喜注册成功', 3000)
         setTimeout(()=> {
-            alert('跳转页码')
+           this.props.navigation.navigate("TabBar")
         },3000)
 
     }

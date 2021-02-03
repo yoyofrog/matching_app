@@ -19,7 +19,7 @@ import {inject, observer} from "mobx-react";
 @observer
 export default class Login extends Component {
     state = {
-        phoneNumber: '13616520261',
+        phoneNumber: '18665711978',
         phoneValid: true,
         isLoading: true,
         showLogin: true,
@@ -173,7 +173,6 @@ export default class Login extends Component {
                     <View style={{padding: pxToDp(20)}}>
                         {showLogin ? Login : Vcode}
                     </View>
-
 
                 </View>
             </SafeAreaProvider>

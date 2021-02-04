@@ -35,7 +35,6 @@ class Index extends Component {
     }
     getCards= async ()=>{
         const result = await request.privateGet(FRIENDS_CARDS, this.params)
-        console.log(result)
         if(result.code === "10000") {
             this.setState({cards: [...this.state.cards,...result.data]})
         }
@@ -63,12 +62,10 @@ class Index extends Component {
             Toast.message("没有更多用户",1000,"center")
         }
         this.getCards()
-
     }
 
     render() {
         const {cards, currentCard} = this.state
-
         return (
             <View style={{flex:1, backgroundColor:"#fff"}}>
                 <THNav title={'探花'}></THNav>

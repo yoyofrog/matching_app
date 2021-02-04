@@ -23,11 +23,11 @@ class Index extends Component {
                     </View>
 
                      <View style={{alignItems: "center"}}>
-                        <TouchableOpacity style={{width: pxToDp(60), height: pxToDp(60),
+                        <TouchableOpacity onPress={()=>{this.goPage("Search")}} style={{width: pxToDp(60), height: pxToDp(60),
                         backgroundColor: "skyblue", borderRadius: pxToDp(30),justifyContent:"center", alignItems:"center"}}>
                         <SvgUri style={{width: pxToDp(40), height: pxToDp(40)}} fill="#fff" svgXmlData={nearby}/>
                         </TouchableOpacity>
-                        <Text style={{marginTop: 5, color: "#fff"}}>附件</Text>
+                        <Text style={{marginTop: 5, color: "#fff"}}>附近</Text>
                     </View>
                      <View style={{alignItems: "center"}}>
                         <TouchableOpacity style={{width: pxToDp(60), height: pxToDp(60),

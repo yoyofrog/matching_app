@@ -79,8 +79,11 @@ class Index extends Component {
         });
         Picker.show();
     }
+    handleSumbmitFilter=()=>{
+        this.props.onSubmitFilter(this.state)
+        this.props.onClose()
+    }
     render() {
-        console.log(this.state.gender,'bb')
         const {gender,lastLogin,distance, city, education} = this.state
         return (
             <View style={{ position:"absolute", bottom:0, width:"100%", height:"70%", backgroundColor:"#fff",
@@ -89,7 +92,7 @@ class Index extends Component {
                 <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                     <Text></Text>
                     <Text style={{color: "#ccc", fontSize:pxToDp(16)}}>帅选</Text>
-                    <Icon onPress={this.props.onPress} style={{fontSize:pxToDp(20)}} name="iconshibai"></Icon>
+                    <Icon onPress={this.props.onClose} style={{fontSize:pxToDp(20)}} name="iconshibai"></Icon>
                 </View>
                 {/*性别选择*/}
                 <View style={{flexDirection:"row", alignItems:"center", marginTop:pxToDp(20)}}>
@@ -131,7 +134,7 @@ class Index extends Component {
                     <Text onPress={this.chooseEducation} style={{color:"#777", fontSize:pxToDp(15), fontWeight:"400"}}>{education||"请选择"}</Text>
                 </View>
                 {/*按钮*/}
-                <THButton style={{marginTop:pxToDp(10),width: "100%", height:pxToDp(30),alignSelf:"center",borderRadius:pxToDp(20), overflow: 'hidden' }}>确认</THButton>
+                <THButton onPress={this.handleSumbmitFilter} style={{marginTop:pxToDp(10),width: "100%", height:pxToDp(30),alignSelf:"center",borderRadius:pxToDp(20), overflow: 'hidden' }}>确认</THButton>
             </View>
         )
     }

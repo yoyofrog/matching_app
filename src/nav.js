@@ -8,6 +8,7 @@ import Login from './components/account/login/index'
 import UserInfo from "./components/account/userinfo";
 import Demo from './demo'
 import TabBar from '../src/tabbar'
+import TanHua from './components/friend/tanhua'
 
 const Stack = createStackNavigator();
 
@@ -26,11 +27,12 @@ class Nav extends React.Component {
         console.log(initialRouteName,'nav')
         return (
             <NavigationContainer>
-                <Stack.Navigator headerMode='none' initialRouteName={initialRouteName}>
+                <Stack.Navigator headerMode='none' initialRouteName={"TanHua"}>
                     <Stack.Screen name="Login" component={Login}/>
                     <Stack.Screen name="UserInfo" component={UserInfo}/>
                     <Stack.Screen name="Demo" component={Demo}/>
                     <Stack.Screen name="TabBar" component={TabBar}/>
+                    <Stack.Screen name="TanHua" component={TanHua}/>
                 </Stack.Navigator>
             </NavigationContainer>
         )

@@ -34,9 +34,9 @@ class Friend extends Component {
         this.getRecommend()
     }
 
-    getRecommend = async () => {
+    getRecommend = async (filterParams={}) => {
         const {params} = this.state
-        const result = await request.privateGet(FRIENDS_RECOMMEND, params)
+        const result = await request.privateGet(FRIENDS_RECOMMEND, {...params, ...filterParams})
         if (result.code === "10000") {
             this.setState({recommends: result.data})
         }
@@ -54,10 +54,14 @@ class Friend extends Component {
             ref={v => overlayViewRef = v}
             >
               {/*显示帅选组件*/}
-              <FilterPanel params={others} onPress={()=>{overlayViewRef.close()}}/>
+              <FilterPanel onSubmitFilter={this.handleSubmitFilter} params={others} onClose={()=>{overlayViewRef.close()}}/>
           </Overlay.View>
         );
         Overlay.show(overlayView)
+    }
+    handleSubmitFilter=async (filterParams)=>{
+       this.getRecommend(filterParams)
+
     }
 
     render() {

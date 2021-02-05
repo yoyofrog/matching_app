@@ -10,6 +10,9 @@ import Demo from './demo'
 import TabBar from '../src/tabbar'
 import TanHua from './components/friend/tanhua'
 import Search from './components/friend/search'
+import TestSoul from './components/friend/testsoul'
+import TestQuestion from './components/friend/testsoul/testquestions'
+import TestResult   from './components/friend/testsoul/testresult'
 
 const Stack = createStackNavigator();
 
@@ -35,6 +38,9 @@ class Nav extends React.Component {
                     <Stack.Screen name="TabBar" component={TabBar}/>
                     <Stack.Screen name="TanHua" component={TanHua}/>
                     <Stack.Screen name="Search" component={Search}/>
+                    <Stack.Screen name="TestSoul" component={TestSoul}/>
+                    <Stack.Screen name="TestQuestion" component={TestQuestion}/>
+                    <Stack.Screen name="TestResult" component={TestResult}/>
 
                 </Stack.Navigator>
             </NavigationContainer>

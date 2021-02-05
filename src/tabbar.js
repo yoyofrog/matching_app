@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import TabNavigator from 'react-native-tab-navigator';
+import {inject, observer } from "mobx-react";
 import {View, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {pxToDp} from "./utils/stylesKits";
@@ -8,10 +9,19 @@ import Friend from './components/friend/home/index'
 import Group from './components/group/home/index'
 import Message from './components/message/home/index'
 import User from './components/user/home/index'
+import request from "./utils/request";
+import {MY_INFO} from "./utils/pathMap";
 
+@inject("userStore")
+@observer
 export default class TabBar extends Component {
     state = {
         selectedTab: 'home'
+    }
+    async componentDidMount() {
+        const result = await request.privateGet(MY_INFO)
+        console.log(result.data)
+        this.props.userStore.setUser(result.data)
     }
 
     render() {

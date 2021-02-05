@@ -30,7 +30,7 @@ class Index extends Component {
                         <Text style={{marginTop: 5, color: "#fff"}}>附近</Text>
                     </View>
                      <View style={{alignItems: "center"}}>
-                        <TouchableOpacity style={{width: pxToDp(60), height: pxToDp(60),
+                        <TouchableOpacity onPress={()=>{this.goPage("TestSoul")}} style={{width: pxToDp(60), height: pxToDp(60),
                         backgroundColor: "orange", borderRadius: pxToDp(30),justifyContent:"center", alignItems:"center"}}>
                         <SvgUri style={{width: pxToDp(40), height: pxToDp(40)}} fill="#fff" svgXmlData={soul}/>
                         </TouchableOpacity>

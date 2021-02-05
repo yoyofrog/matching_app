@@ -13,6 +13,7 @@ import Nav from './src/nav'
 import Geo from './src/utils/geo'
 import JMessage from "./src/utils/JMessage";
 import rootStore from './src/mobx'
+import userStore from "./src/mobx/user"
 
 class App extends Component{
     state={
@@ -32,7 +33,7 @@ class App extends Component{
 
     render () {
       return (
-          <Provider rootStore={rootStore}>
+          <Provider rootStore={rootStore} userStore={userStore}>
               <View style={{flex:1}}>
                   { this.state.isGeoInit? <Nav></Nav>: null}
               </View>

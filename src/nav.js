@@ -32,7 +32,7 @@ class Nav extends React.Component {
         console.log(initialRouteName,'nav')
         return (
             <NavigationContainer>
-                <Stack.Navigator headerMode='none' initialRouteName={"TabBar"}>
+                <Stack.Navigator headerMode='none' initialRouteName={"Login"}>
                     <Stack.Screen name="Login" component={Login}/>
                     <Stack.Screen name="UserInfo" component={UserInfo}/>
                     <Stack.Screen name="Demo" component={Demo}/>

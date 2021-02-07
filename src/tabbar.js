@@ -11,6 +11,7 @@ import Message from './components/message/home/index'
 import User from './components/user/home/index'
 import request from "./utils/request";
 import {MY_INFO} from "./utils/pathMap";
+import JMessage from "./utils/JMessage";
 
 @inject("userStore")
 @observer
@@ -22,6 +23,8 @@ export default class TabBar extends Component {
         const result = await request.privateGet(MY_INFO)
         console.log(result.data)
         this.props.userStore.setUser(result.data)
+        // 极光登录
+        await JMessage.login(result.data.guid,result.data.mobile)
     }
 
     render() {

@@ -18,7 +18,7 @@ class Friend extends Component {
     state = {
         params: {
             page: 1,
-            pagesize: 10,
+            pagesize: 2000,
             gender: "男",
             distance: 2,
             lastLogin: "",
@@ -75,7 +75,7 @@ class Friend extends Component {
                     </View>
                 )}
             >
-                <View style={{height: 1000,marginBottom:pxToDp(200)}}>
+                <View style={{marginBottom:pxToDp(200)}}>
                     <Visitor/>
                     <View style={{height: pxToDp(5), backgroundColor: "lightgray"}}></View>
                     <PerfectGirl/>

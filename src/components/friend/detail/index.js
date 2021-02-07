@@ -4,14 +4,18 @@ import {ImageHeaderScrollView} from 'react-native-image-header-scroll-view';
 import {Carousel} from "teaset"
 import LinearGradient from "react-native-linear-gradient";
 import ImageViewer from "react-native-image-zoom-viewer";
+import {inject, observer} from "mobx-react";
 
 import request from "../../../utils/request";
 import {FRIENDS_PERSONALINFO, BASE_URI} from "../../../utils/pathMap";
 import {pxToDp} from "../../../utils/stylesKits";
 import FriendHead from "../home/components/friendhead";
 import Icon from "../../../subComponents/iconfont";
+import JMessage from "../../../utils/JMessage";
 
 
+@inject("userStore")
+@observer
 class Index extends Component {
     state = {
         userDetail: {},
@@ -84,6 +88,14 @@ class Index extends Component {
             this.params.page++
             this.getDetail()
         }
+    }
+    sendLike= async ()=>{
+        // console.log('like')
+        const guid = this.state.userDetail.guid
+        const text = this.props.userStore.mobile + " 喜欢了你"
+        const extras = {user: JSON.stringify(this.state.userDetail) }
+        const result = await JMessage.sendTextMessage(guid, text, extras)
+        // console.log(result,"88888")
     }
 
     render() {
@@ -209,7 +221,7 @@ class Index extends Component {
                     }}>聊一下</Text>
                 </LinearGradient>
             </TouchableOpacity>
-            <TouchableOpacity style={{flexDirection: "row", marginRight: pxToDp(10)}}>
+            <TouchableOpacity onPress={this.sendLike} style={{flexDirection: "row", marginRight: pxToDp(10)}}>
                 <LinearGradient style={{
                     width: pxToDp(100), height: pxToDp(30), borderRadius: pxToDp(15),
                     flexDirection: "row", alignItems: "center", justifyContent: "space-evenly"

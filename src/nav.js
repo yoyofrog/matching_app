@@ -13,6 +13,7 @@ import Search from './components/friend/search'
 import TestSoul from './components/friend/testsoul'
 import TestQuestion from './components/friend/testsoul/testquestions'
 import TestResult   from './components/friend/testsoul/testresult'
+import Detail from "./components/friend/detail"
 
 const Stack = createStackNavigator();
 
@@ -41,7 +42,7 @@ class Nav extends React.Component {
                     <Stack.Screen name="TestSoul" component={TestSoul}/>
                     <Stack.Screen name="TestQuestion" component={TestQuestion}/>
                     <Stack.Screen name="TestResult" component={TestResult}/>
-
+                    <Stack.Screen name="Detail" component={Detail}/>
                 </Stack.Navigator>
             </NavigationContainer>
         )

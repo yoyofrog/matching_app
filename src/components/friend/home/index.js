@@ -11,11 +11,10 @@ import Visitor from "./components/visitor"
 import Icon from "../../../subComponents/iconfont"
 import PerfectGirl from "./components/perfectgirl"
 import FilterPanel from "./components/filterpanel"
-
-
-
+import {NavigationContext} from "@react-navigation/native"
 
 class Friend extends Component {
+    static contextType = NavigationContext
     state = {
         params: {
             page: 1,
@@ -40,8 +39,6 @@ class Friend extends Component {
         if (result.code === "10000") {
             this.setState({recommends: result.data})
         }
-
-
     }
 
     filterHandler=()=>{
@@ -92,9 +89,9 @@ class Friend extends Component {
                                 <Icon   style={{color: "#666"}} name="iconshaixuan"></Icon>
                             </TouchableOpacity>
                         </View>
-                        <View >
+                        <View>
                             {recommends.map((item, i) =>
-                                <View key={i} style={{flexDirection:"row", justifyContent:"space-between" , borderBottomWidth:pxToDp(2), borderBottomColor:"#ccc"}} >
+                                <TouchableOpacity onPress={()=> this.context.navigate("Detail", {id:item.id})} key={i} style={{flexDirection:"row", justifyContent:"space-between" , borderBottomWidth:pxToDp(2), borderBottomColor:"#ccc"}} >
                                     {/*leftside*/}
                                     <View style={{flexDirection: "row", padding: pxToDp(10), alignItems:"center"}}>
                                         <Image style={{width: pxToDp(50), height: pxToDp(50), borderRadius: pxToDp(25)}}
@@ -147,7 +144,7 @@ class Friend extends Component {
                                                 color: "#ccc"
                                             }}>{item.fateValue}</Text>
                                         </View>
-                                </View>
+                                </TouchableOpacity>
                             )}
                         </View>
                     </View>

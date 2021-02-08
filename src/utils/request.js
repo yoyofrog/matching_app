@@ -22,8 +22,7 @@ export default {
     post: instance.post,
     //post 自动带上token
 
-    
-    privateGet:(url,data={},options={})=>{
+     privateGet:(url,data={},options={})=>{
         const token = rootStore.token;
         const headers = options.headers||{}
         return instance.get(url, {

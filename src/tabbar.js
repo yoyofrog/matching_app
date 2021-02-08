@@ -11,7 +11,7 @@ import User from './components/user/home/index'
 
 export default class TabBar extends Component {
     state = {
-        selectedTab: 'home'
+        selectedTab: 'group'
     }
 
     render() {

@@ -21,6 +21,19 @@ export default {
     get: instance.get,
     post: instance.post,
     //post 自动带上token
+     privateGet:(url,data={},options={})=>{
+        const token = rootStore.token;
+        const headers = options.headers||{}
+        return instance.get(url, {
+            ...options,
+            params: data,
+            headers:{
+                //主要Bearer后面有个空格
+                 "Authorization": `Bearer ${token}`,
+                ...headers
+            }
+        })
+    },
     privatePost:(url,data={},options={})=>{
         const token = rootStore.token;
         const headers = options.headers||{}

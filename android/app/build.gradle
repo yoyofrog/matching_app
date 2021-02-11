@@ -203,6 +203,8 @@ android {
 
 dependencies {
 
+    //配置react-native-image-picker
+    compile project(':react-native-image-picker')
     //极光配置
     compile project(':jmessage-react-plugin')
     compile project(':jcore-react-native')

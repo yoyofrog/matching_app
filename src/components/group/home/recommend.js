@@ -9,10 +9,15 @@ import JMessage from "../../../utils/JMessage";
 import {Toast, ActionSheet} from "teaset";
 import {inject, observer} from "mobx-react";
 import ImageViewer from "react-native-image-zoom-viewer";
+import {NavigationContext} from "@react-navigation/native"
+import LinearGradient from "react-native-linear-gradient";
+import Validator from "../../../utils/validator"
+import {EMOTIONS_DATA} from "../../../subComponents/emotions/datasource";
 
 @inject("userStore")
 @observer
 class Index extends Component {
+    static contextType = NavigationContext
     params = {
         page: 1,
         pagesize: 3
@@ -20,8 +25,8 @@ class Index extends Component {
     state = {
         list: [],
         showAlbum: false,
-        imgUrls:[],
-        currentIndex:0
+        imgUrls: [],
+        currentIndex: 0
 
 
 // uid: 68
@@ -49,13 +54,25 @@ class Index extends Component {
     componentDidMount() {
         this.getRecommend()
     }
+    renderRichText=(text)=>{
+        const list = Validator.renderRichText(text)
+        return list.map((v, i)=>{
+            if(v.text) {
+                return <Text style={{color:"#666"}} key={i}>{v.text}</Text>
+            } else if(v.image){
+                return <Image style={{width:pxToDp(25), height:pxToDp(25)}} key={i} source={EMOTIONS_DATA[v.image]}></Image>
+            } else{
+                return <></>
+            }
+        })
+    }
 
-    getRecommend = async (isNew=false) => {
+    getRecommend = async (isNew = false) => {
         const result = await request.privateGet(QZ_TJDT, this.params)
         if (isNew) {
-            this.setState({list:result.data})
+            this.setState({list: result.data})
         } else {
-           this.setState({list: [...this.state.list, ...result.data]})
+            this.setState({list: [...this.state.list, ...result.data]})
         }
 
         this.totalPages = result.pages
@@ -72,14 +89,15 @@ class Index extends Component {
         this.getRecommend()
 
     }
-    handleStar=async (item)=>{
+    handleStar = async (item) => {
         const url = QZ_DT_DZ.replace(":id", item.tid)
-        const result= await request.privateGet(url)
+        const result = await request.privateGet(url)
         console.log(result)
-        if(result.data.iscancelstar){
-            Toast.smile('取消点赞成功',1000, "center")
+        if (result.data.iscancelstar) {
+            Toast.smile('取消点赞成功', 1000, "center")
         } else {
-        Toast.smile("点赞成功",1000, "center")}
+            Toast.smile("点赞成功", 1000, "center")
+        }
         //极光信息服务器有问题，暂时不运行代码
         // const text = `${this.props.userStore.user.nick_name}给你动态点赞了`
         // const extras= {user:JSON.stringify(this.props.userStore.user)}
@@ -87,46 +105,49 @@ class Index extends Component {
 
         // 从新发送请求
 
-        this.params.page=1
+        this.params.page = 1
         this.getRecommend(true)
     }
-    handleLike=async(item)=>{
-        const url =QZ_DT_XH.replace(":id", item.tid)
-        const result= await request.privateGet(url)
+    handleLike = async (item) => {
+        const url = QZ_DT_XH.replace(":id", item.tid)
+        const result = await request.privateGet(url)
         console.log(result)
-        if(result.data.iscancelstar){
-            Toast.smile('取消喜欢成功',1000, "center")
+        if (result.data.iscancelstar) {
+            Toast.smile('取消喜欢成功', 1000, "center")
         } else {
-        Toast.smile("喜欢成功",1000, "center")}
-        this.params.page=1
+            Toast.smile("喜欢成功", 1000, "center")
+        }
+        this.params.page = 1
         this.getRecommend(true)
 
     }
-    showMore=async (item)=>{
-        const opts=[
-            {title: "举报", onPress:()=> alert("举报")},
-            {title:"不敢兴趣", onPress:()=>this.notInterest(item)},
+    showMore = async (item) => {
+        const opts = [
+            {title: "举报", onPress: () => alert("举报")},
+            {title: "不敢兴趣", onPress: () => this.notInterest(item)},
         ]
-        ActionSheet.show(opts,{title:"取消"})
+        ActionSheet.show(opts, {title: "取消"})
     }
-    notInterest=async (item)=>{
+    notInterest = async (item) => {
         const url = QZ_DT_BGXQ.replace(":id", item.tid)
-         const result= await request.privateGet(url)
+        const result = await request.privateGet(url)
         console.log(result)
         Toast.smile("操作成功")
         this.params.page = 1;
         this.getRecommend(true)
     }
-    showAlbum=(index, ii)=>{
-        const imgUrls = this.state.list[index].images.map(v=>({url:BASE_URI + v.thum_img_path}))
+    showAlbum = (index, ii) => {
+        const imgUrls = this.state.list[index].images.map(v => ({url: BASE_URI + v.thum_img_path}))
         const currentIndex = ii
         const showAlbum = true
         this.setState({imgUrls, currentIndex, showAlbum})
     }
-
+    goComment = (item) => {
+        this.context.navigate("Comment", item)
+    }
     render() {
-        const {list,showAlbum,imgUrls, currentIndex} = this.state
-        console.log(list, "fffffff")
+        const {list, showAlbum, imgUrls, currentIndex} = this.state
+
         if (list.length === 0) return <></>
         return (
             <>
@@ -200,13 +221,15 @@ class Index extends Component {
                                         </View>
                                     </View>
                                 </View>
-                                <TouchableOpacity onPress={()=>{this.showMore(item)}}>
+                                <TouchableOpacity onPress={() => {
+                                    this.showMore(item)
+                                }}>
                                     <Icon style={{fontSize: pxToDp(25), color: "#ccc"}} name="icongengduo"></Icon>
                                 </TouchableOpacity>
                             </View>
                             {/*用户发布内容*/}
-                            <View>
-                                <Text>{item.content}</Text>
+                            <View style={{marginTop:pxToDp(8), flexDirection:"row", flexWrap:"wrap",alignItems:"center"}}>
+                               {this.renderRichText(item.content)}
                             </View>
                             {/*用户发布图片*/}
                             <View style={{marginTop: pxToDp(5), flexDirection: "row"}}>
@@ -228,35 +251,57 @@ class Index extends Component {
                             </View>
                             {/*点赞，评论*/}
                             <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                                <TouchableOpacity onPress={()=>this.handleStar(item)}
-                                    style={{flexDirection: "row", marginTop: pxToDp(5), alignItems: "center"}}>
+                                <TouchableOpacity onPress={() => this.handleStar(item)}
+                                                  style={{
+                                                      flexDirection: "row",
+                                                      marginTop: pxToDp(5),
+                                                      alignItems: "center"
+                                                  }}>
                                     <Icon style={{color: "#666", fontSize: pxToDp(11)}} name="icondianzan-o"/>
                                     <Text style={{color: "#666", fontSize: pxToDp(11)}}>{item.star_count}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={{flexDirection: "row", marginTop: pxToDp(5), alignItems: "center"}}>
+                                <TouchableOpacity onPress={() => this.goComment(item)}
+                                                  style={{
+                                                      flexDirection: "row",
+                                                      marginTop: pxToDp(5),
+                                                      alignItems: "center"
+                                                  }}>
                                     <Icon style={{color: "#666", fontSize: pxToDp(11)}} name="iconpinglun"/>
                                     <Text style={{color: "#666", fontSize: pxToDp(11)}}>{item.comment_count}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={()=>{this.handleLike(item)}}
-                                    style={{flexDirection: "row", marginTop: pxToDp(5), alignItems: "center"}}>
+                                <TouchableOpacity onPress={() => {
+                                    this.handleLike(item)
+                                }}
+                                                  style={{
+                                                      flexDirection: "row",
+                                                      marginTop: pxToDp(5),
+                                                      alignItems: "center"
+                                                  }}>
                                     <Icon style={{color: "#666", fontSize: pxToDp(11)}} name="iconxihuan-o"/>
                                     <Text style={{color: "#666", fontSize: pxToDp(11)}}>{item.like_count}</Text>
                                 </TouchableOpacity>
                             </View>
-                            <Modal visible={showAlbum} transparent={true}>
-                                <ImageViewer onClick={() => {
-                                    this.setState({showAlbum: false})
-                                }} imageUrls={imgUrls} index={currentIndex}/>
-                            </Modal>
 
                         </View>
-                            {(this.params.page >= this.totalPages)&&(index=== list.length - 1) ?
-                                <View style={{height:pxToDp(30), alignItems:"center"}}>
-                                    <Text>没有更多数据了</Text>
-                                </View> : <></>}
+                            {(this.params.page >= this.totalPages) && (currentIndex === list.length - 1) ?
+                            <View style={{height: pxToDp(30), alignItems: "center"}}>
+                                <Text>没有更多数据了</Text>
+                            </View> : <></>}
 
                         </>}/>
+                        <Modal visible={showAlbum} transparent={true}>
+                            <ImageViewer onClick={() => {
+                                this.setState({showAlbum: false})
+                            }} imageUrls={imgUrls} index={currentIndex}/>
+                        </Modal>
+                        <TouchableOpacity onPress={()=>this.context.navigate('Publish')} style={{position:"absolute", right:"5%", bottom:"10%"}} >
+                            <LinearGradient colors={["#da6c8b", "#9b65cc"]} start={{x:0, y:0}} end={{x:1, y:1}}
+                                            style={{width:pxToDp(80), height:pxToDp(80), borderRadius:pxToDp(40),
+                                                alignItems:"center",justifyContent:"center"}}>
+                                <Text style={{color:"#fff", fontSize:pxToDp(20)}}>发布</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+
             </>
         )
     }

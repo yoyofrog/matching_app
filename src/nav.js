@@ -14,6 +14,8 @@ import TestSoul from './components/friend/testsoul'
 import TestQuestion from './components/friend/testsoul/testquestions'
 import TestResult   from './components/friend/testsoul/testresult'
 import Detail from "./components/friend/detail"
+import Comment from './components/group/home/comment'
+import Publish  from './components/group/home/publish'
 
 const Stack = createStackNavigator();
 
@@ -43,6 +45,8 @@ class Nav extends React.Component {
                     <Stack.Screen name="TestQuestion" component={TestQuestion}/>
                     <Stack.Screen name="TestResult" component={TestResult}/>
                     <Stack.Screen name="Detail" component={Detail}/>
+                    <Stack.Screen name="Comment" component={Comment}/>
+                    <Stack.Screen name="Publish" component={Publish}/>
                 </Stack.Navigator>
             </NavigationContainer>
         )

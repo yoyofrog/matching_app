@@ -16,12 +16,11 @@ class Index extends Component {
                     <View  style={{marginTop:pxToDp(30), flexDirection:"row", alignItems:"center", justifyContent:"space-between" }}>
                         <TouchableOpacity onPress={this.context.goBack} style={{flexDirection:"row",alignItems:"center", width:pxToDp(40)}}>
                             <Icon style={{color:"#fff", fontSize:pxToDp(14)}} name="iconfanhui"></Icon>
-                            <Text style={{color:"#fff", fontSize:pxToDp(14)}}>返回</Text>
+                            <Text style={{color:"#fff", fontSize:pxToDp(14)}}>{this.props.leftText||"返回"}</Text>
                         </TouchableOpacity>
                         <Text style={{color:"#fff", fontSize:pxToDp(14)}}>{this.props.title}</Text>
-                        <Text style={{width:pxToDp(40)}}></Text>
+                        <Text onPress={this.props.onRightPress||function () { }} style={{width:pxToDp(40),color:"#fff", fontSize:pxToDp(14)}}>{this.props.rightText}</Text>
                     </View>
-
                 </ImageBackground>
             </View>
         )

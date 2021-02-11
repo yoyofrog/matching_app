@@ -12,6 +12,8 @@ import {pxToDp} from "../../../utils/stylesKits";
 import FriendHead from "../home/components/friendhead";
 import Icon from "../../../subComponents/iconfont";
 import JMessage from "../../../utils/JMessage";
+import Validator from "../../../utils/validator"
+import {EMOTIONS_DATA} from "../../../subComponents/emotions/datasource";
 
 
 @inject("userStore")
@@ -59,6 +61,19 @@ class Index extends Component {
     componentDidMount() {
         this.getDetail()
     }
+    renderRichText=(text)=>{
+        const list = Validator.renderRichText(text)
+        console.log(list)
+        return list.map((v, i)=>{
+            if(v.text) {
+                return <Text style={{color:"#666", fontSize:pxToDp(16)}} key={i}>{v.text}</Text>
+            } else if(v.image){
+                return <Image style={{width:pxToDp(20), height:pxToDp(20)}} key={i} source={EMOTIONS_DATA[v.image]}></Image>
+            } else{
+                return <></>
+            }
+        })
+    }
 
     getDetail = async () => {
         const url = FRIENDS_PERSONALINFO.replace(":id", this.props.route.params.id)
@@ -77,10 +92,6 @@ class Index extends Component {
 
     }
     onScroll=({nativeEvent})=>{
-        // console.log(nativeEvent.contentSize.height)
-        // console.log(nativeEvent.layoutMeasurement.height)
-        // console.log(nativeEvent.contentOffset.y)
-
         const isBottom = nativeEvent.contentSize.height - nativeEvent.layoutMeasurement.height - nativeEvent.contentOffset.y < 10
         const isMore = this.params.page < this.totalPages
         if (isBottom && isMore && !this.isLoading) {
@@ -296,8 +307,8 @@ class Index extends Component {
                     </View>
                 </View>
                 {/*用户发布内容*/}
-                <View>
-                    <Text>{item.content}</Text>
+                <View style={{marginTop:pxToDp(8), flexDirection:"row", flexWrap:"wrap",alignItems:"center"}}>
+                   {this.renderRichText(item.content)}
                 </View>
                 {/*用户发布图片*/}
                 <View style={{marginTop:pxToDp(5), flexDirection:"row"}}>

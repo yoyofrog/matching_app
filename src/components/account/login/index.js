@@ -19,7 +19,7 @@ import {inject, observer} from "mobx-react";
 @observer
 export default class Login extends Component {
     state = {
-        phoneNumber: '18665711978',
+        phoneNumber: '18811380000',
         phoneValid: true,
         isLoading: true,
         showLogin: true,
@@ -93,11 +93,16 @@ export default class Login extends Component {
             token: result.data.token,
             userId: result.data.id
         }))
+
         if (result.data.isNew) {
             // 新用户
             this.props.navigation.navigate('UserInfo')
+
         } else {
-            this.props.navigation.navigate('TabBar')
+            // this.props.navigation.navigate('TabBar')
+            this.props.navigation.reset({
+                routes:[{name:"TabBar"}]
+            })
         }
     }
 

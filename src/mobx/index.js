@@ -19,6 +19,12 @@ class RootStore {
     this.token = token;
     this.userId = userId
   }
+  @action
+  clearUserInfo(mobile, token, userId) {
+    this.mobile = '';
+    this.token = '';
+    this.userId = ''
+  }
 }
 
 export default new RootStore();

@@ -67,6 +67,8 @@ export const FRIENDS_QUESTIONANS = '/friends/questionsAns/:id';// 测灵魂-提�
  */
 export const FRIENDS_PERSONALINFO = '/friends/personalInfo/:id'; // 朋友信息（点击朋友进入）;
 
+export const FRIENDS_PERSONALINFO_GUID = '/friends/personalInfoByGuid/:ids'//盆友信息，通过guid获取
+
 
 // 圈子接口(QZ)
 /**

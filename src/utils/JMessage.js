@@ -1,4 +1,5 @@
 import JMessage from "jmessage-react-plugin";
+import Toast from "./Toast"
 
 export default {
     init() {
@@ -43,5 +44,30 @@ export default {
                 text, extras
             }, resolve, reject)
         })
+    },
+    // 发送图片
+    sendImageMessage(username,path,extras = {}){
+        return new Promise((resovle, reject)=>{
+            JMessage.sendImageMessage({
+                type:"single", username,
+                path, extras
+            },
+                resolve, reject)
+        })
+
+    },
+    // 获取未读聊天信息
+    getCoversations(){
+        return new Promise((resolve, reject)=>{
+            JMessage.getConversations(res=>{
+                Toast.hideLoading()
+                resolve(res)
+            }, reject)
+
+        })
+    },
+    //退出极光
+    logout(){
+        JMessage.logout()
     }
 }

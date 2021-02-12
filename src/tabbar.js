@@ -17,7 +17,7 @@ import JMessage from "./utils/JMessage";
 @observer
 export default class TabBar extends Component {
     state = {
-        selectedTab: 'group'
+        selectedTab: 'user'
     }
     async componentDidMount() {
         const result = await request.privateGet(MY_INFO)

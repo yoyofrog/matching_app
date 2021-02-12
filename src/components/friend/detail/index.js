@@ -102,11 +102,12 @@ class Index extends Component {
     }
     sendLike= async ()=>{
         // console.log('like')
-        const guid = this.state.userDetail.guid
+        const guid = "136165059931612681586882"
         const text = this.props.userStore.mobile + " 喜欢了你"
         const extras = {user: JSON.stringify(this.state.userDetail) }
         const result = await JMessage.sendTextMessage(guid, text, extras)
-        // console.log(result,"88888")
+        console.log(result,"88888")
+        console.log(result)
     }
 
     render() {

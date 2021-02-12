@@ -33,6 +33,10 @@ class UserStore {
     setUser = (user)=> {
         this.user = user
     }
+    @action
+    clearUser =()=>{
+        this.user = {}
+    }
 
 }
 

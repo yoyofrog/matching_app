@@ -101,7 +101,9 @@ export default class UserInfo extends Component{
           </Overlay.View>
         );
         Overlay.show(overlayView)
+
         const result = await this.uploadHeadImg(image)
+        console.log(result)
         if (result.code !== "10000") {
             return
         }
@@ -118,7 +120,9 @@ export default class UserInfo extends Component{
         overlayViewRef.close()
         Toast.smile('恭喜注册成功', 3000)
         setTimeout(()=> {
-           this.props.navigation.navigate("TabBar")
+           this.props.navigation.reset({
+                routes:[{name:"TabBar", }]
+            })
         },3000)
 
     }
